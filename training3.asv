@@ -1,0 +1,98 @@
+clc;
+clear all;
+countertable=1;
+xDoc = xmlread('annotations-consensus-ma-only.xml');
+strc  = xml2struct( xDoc );
+% minn7=zeros(1,31);
+% maxx7=zeros(1,31);
+% minn7(1:31)=100000;
+% maxx7(1:31)=-100000;
+load('minmax7file.mat','minn7','maxx7');
+for jj=0:49
+d=strc.set.annotations_dash_per_dash_image(jj+1);
+d=d{1,1};
+
+if isfield(d,'annotation')
+    
+inputt=double(imread(strcat('training\image',int2str(jj),'_training.jpg')));
+input= inputt(:, :, 2);
+
+input_img=imread(strcat('normalization\normalization',int2str(jj),'.jpg'));
+input1=double(input_img);
+NormInput= input1(:, :, 2);
+
+[R C]=size(input);
+bloodVessels=mat2gray(imread(strcat('modmask\modmask',int2str(jj),'.jpg')));
+
+[output4,Maxrr,Minrr,Avgrr]=CandidateMicroExtract(NormInput,bloodVessels,input);
+[stats,co]=FeatureExtract(input1,output4,input,Maxrr,Minrr,Avgrr);
+
+load('FeatureFile.mat');
+
+ind=(a<6);
+[sz ~]=size(a);
+if sz~=0        
+     minn7(1)=min(min(a),minn7(1));
+     maxx7(1)=max(max(a),maxx7(1));
+     minn7(2)=min(min(per),minn7(2));
+     maxx7(2)=max(max(per),maxx7(2)); 
+     minn7(3)=min(min(MrM),minn7(3));
+     maxx7(3)=max(max(MrM),maxx7(3));
+     minn7(4)=min(min(circularity),minn7(4));
+     maxx7(4)=max(max(circularity),maxx7(4));
+     minn7(5)=min(min(i_green),minn7(5));
+     maxx7(5)=max(max(i_green),maxx7(5));
+     minn7(6)=min(min(i_sc),minn7(6));
+     maxx7(6)=max(max(i_sc),maxx7(6));
+     minn7(7)=min(min(m_green),minn7(7));
+     maxx7(7)=max(max(m_green),maxx7(7));
+     minn7(8)=min(min(m_sc),minn7(8));
+     maxx7(8)=max(max(m_sc),maxx7(8));
+     minn7(9)=min(min(NI_green),minn7(9));
+     maxx7(9)=max(max(NI_green),maxx7(9));
+     minn7(10)=min(min(NI_sc),minn7(10));
+     maxx7(10)=max(max(NI_sc),maxx7(10));
+     minn7(11)=min(min(NM_green),minn7(11));
+     maxx7(11)=max(max(NM_green),maxx7(11));
+     minn7(12)=min(min(NM_sc),minn7(12));
+     maxx7(12)=max(max(NM_sc),maxx7(12));
+     minn7(13)=min(min(IDarkest),minn7(13));
+     maxx7(13)=max(max(IDarkest),maxx7(13));
+     minn7(14)=min(min(FiltSig1),minn7(14));
+     maxx7(14)=max(max(FiltSig1),maxx7(14));
+     minn7(15)=min(min(FiltSig2),minn7(15));
+     maxx7(15)=max(max(FiltSig2),maxx7(15));
+     minn7(16)=min(min(FiltSig4),minn7(16));
+     maxx7(16)=max(max(FiltSig4),maxx7(16));
+     minn7(17)=min(min(FiltSig8),minn7(17));
+     maxx7(17)=max(max(FiltSig8),maxx7(17));
+     minn7(18)=min(min(StdFiltSig1),minn7(18));
+     maxx7(18)=max(max(StdFiltSig1),maxx7(18));
+     minn7(19)=min(min(StdFiltSig2),minn7(19));
+     maxx7(19)=max(max(StdFiltSig2),maxx7(19));
+     minn7(20)=min(min(StdFiltSig4),minn7(20));
+     maxx7(20)=max(max(StdFiltSig4),maxx7(20));
+     minn7(21)=min(min(StdFiltSig8),minn7(21));
+     maxx7(21)=max(max(StdFiltSig8),maxx7(21));
+     minn7(22)=min(min(MaxCorr),minn7(22));
+     maxx7(22)=max(max(MaxCorr),maxx7(22));
+     minn7(23)=min(min(MinCorr),minn7(23));
+     maxx7(23)=max(max(MinCorr),maxx7(23));
+     minn7(24)=min(min(AvgCorr),minn7(24));
+     maxx7(24)=max(max(AvgCorr),maxx7(24));
+     minn7(26)=min(min(diffr),minn7(26));
+     maxx7(26)=max(max(diffr),maxx7(26));
+     minn7(27)=min(min(diffg),minn7(27));
+     maxx7(27)=max(max(diffg),maxx7(27));
+     minn7(28)=min(min(diffb),minn7(28));
+     maxx7(28)=max(max(diffb),maxx7(28));
+     minn7(29)=min(min(diffh),minn7(29));
+     maxx7(29)=max(max(diffh),maxx7(29));
+     minn7(30)=min(min(MajorAxis),minn7(30));
+     maxx7(30)=max(max(MajorAxis),maxx7(30));
+    minn7(31)= min(min(MinorAxis),minn7(31));
+    maxx7(31)= max(max(MinorAxis),maxx7(31));
+end
+end
+end
+save('minmax77file.mat','minn7','maxx7');
